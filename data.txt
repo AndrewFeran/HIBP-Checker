@@ -1,0 +1,16 @@
+account-exists@hibp-integration-tests.com
+multiple-breaches@hibp-integration-tests.com
+not-active-and-active-breach@hibp-integration-tests.com
+not-active-breach@hibp-integration-tests.com
+opt-out@hibp-integration-tests.com
+opt-out-breach@hibp-integration-tests.com
+paste-sensitive-breach@hibp-integration-tests.com
+permanent-opt-out@hibp-integration-tests.com
+sensitive-and-other-breaches@hibp-integration-tests.com
+sensitive-breach@hibp-integration-tests.com
+spam-list-only@hibp-integration-tests.com
+spam-list-and-others@hibp-integration-tests.com
+subscription-free-and-other-breaches@hibp-integration-tests.com
+stealer-log@hibp-integration-tests.com
+subscription-free-breach@hibp-integration-tests.com
+unverified-breach@hibp-integration-tests.com
