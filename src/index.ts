@@ -5,6 +5,9 @@ import axios, { AxiosError } from 'axios';
 interface Config {
   key: string;
   delay: number;
+  mongoUri: string;
+  database: string;
+  collection: string;
 }
 
 interface Breach {
@@ -32,9 +35,9 @@ interface BreachDocument {
   breaches: Breach[];
 }
 
-const url = 'mongodb://127.0.0.1:27017';
-const db = 'HIBP';
-const client = new MongoClient(url);
+let client: MongoClient;
+let dbName: string;
+let collectionName: string;
 
 const wait = async (ms: number): Promise<void> => new Promise(done => setTimeout(done, ms));
 
@@ -77,7 +80,7 @@ async function getBreaches(email: string, key: string): Promise<number | undefin
 
 async function ensureUniqueIndex(): Promise<void> {
   await client.connect();
-  const collection = client.db(db).collection('Breaches');
+  const collection = client.db(dbName).collection(collectionName);
 
   try {
     await collection.createIndex({ email: 1 }, { unique: true });
@@ -91,7 +94,7 @@ async function ensureUniqueIndex(): Promise<void> {
 
 async function addBreaches(email: string, breaches: Breach[]): Promise<void> {
   await client.connect();
-  const collection: Collection<BreachDocument> = client.db(db).collection('Breaches');
+  const collection: Collection<BreachDocument> = client.db(dbName).collection(collectionName);
 
   await collection.insertOne({
     email: email,
@@ -106,6 +109,11 @@ async function addBreaches(email: string, breaches: Breach[]): Promise<void> {
 
 async function main(): Promise<void> {
   const config: Config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+
+  // Initialize MongoDB connection
+  client = new MongoClient(config.mongoUri);
+  dbName = config.database;
+  collectionName = config.collection;
 
   await ensureUniqueIndex();
 
