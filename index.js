@@ -42,6 +42,21 @@ async function getBreaches(email, key) {
   return response;
 }
 
+async function ensureUniqueIndex() {
+  await client.connect();
+  const collection = client.db(db).collection('Breaches');
+
+  try {
+    await collection.createIndex({ email: 1 }, { unique: true });
+    console.log('Unique index on email field ensured');
+  } catch (err) {
+    // Index might already exist, that's okay
+    if (err.code !== 85) { // 85 = IndexOptionsConflict
+      console.log('Index creation note:', err.message);
+    }
+  }
+}
+
 async function addBreaches(email, breaches) {
   await client.connect();
   const collection = client.db(db).collection('Breaches');
@@ -60,7 +75,8 @@ async function addBreaches(email, breaches) {
 async function main() {
   const config = await JSON.parse(fs.readFileSync('./config.json'));
 
-  
+  await ensureUniqueIndex();
+
   const data = fs.readFileSync('data.txt', 'utf-8');
   let allFileContents = data.split(/\r?\n/)
   for (i in allFileContents) {
